@@ -1,8 +1,8 @@
 package com.adedom.okrandroidtoflutter
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.TextView
+import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatActivity
 import io.flutter.embedding.android.FlutterActivity
 
 class MainActivity : AppCompatActivity() {
@@ -10,7 +10,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        findViewById<TextView>(R.id.tvHelloWorld).setOnClickListener {
+        setSupportActionBar(findViewById(R.id.toolbar))
+
+        findViewById<LinearLayout>(R.id.btSendDataToFlutter).setOnClickListener {
             startActivity(FlutterActivity.createDefaultIntent(this))
         }
     }
