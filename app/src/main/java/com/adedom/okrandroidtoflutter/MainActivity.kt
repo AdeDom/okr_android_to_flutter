@@ -26,31 +26,23 @@ class MainActivity : AppCompatActivity() {
                 MethodChannel(binaryMessenger, "com.choco/data")
             }
 
+        methodChannel?.setMethodCallHandler { call, _ ->
+            when (call.method) {
+                "onResultToNative" -> {
+                    val flutterResult = call.argument<String>("result")
+                    findViewById<TextView>(R.id.tvResultFromFlutter).text = flutterResult
+                }
+                else -> {
+                    Toast.makeText(baseContext, "Not implemented", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
         findViewById<LinearLayout>(R.id.btSendDataToFlutter).setOnClickListener {
             val arguments = mapOf(
                 "data" to findViewById<EditText>(R.id.etSendData).text.toString().trim()
             )
-            methodChannel?.invokeMethod(
-                "openFlutterPage",
-                arguments,
-                object : MethodChannel.Result {
-                    override fun success(result: Any?) {
-                        findViewById<TextView>(R.id.tvResultFromFlutter).text = result.toString()
-                    }
-
-                    override fun error(
-                        errorCode: String,
-                        errorMessage: String?,
-                        errorDetails: Any?
-                    ) {
-                        Toast.makeText(baseContext, "$errorMessage", Toast.LENGTH_SHORT).show()
-                    }
-
-                    override fun notImplemented() {
-                        Toast.makeText(baseContext, "Not implemented", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            )
+            methodChannel?.invokeMethod("openFlutterPage", arguments)
             val intent = FlutterActivity
                 .withCachedEngine("my_engine_id")
                 .backgroundMode(FlutterActivityLaunchConfigs.BackgroundMode.transparent)
